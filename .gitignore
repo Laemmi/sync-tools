@@ -1,0 +1,4 @@
+.idea
+/vendor/
+/config/laemmi-sync-tools.yml
+/.phpunit.result.cache
