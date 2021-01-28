@@ -62,6 +62,7 @@ class Mysql
      * @var array|string[]
      */
     protected array $attributes = [
+        '--verbose',
         '--single-transaction',
         '--skip-lock-tables',
     ];
@@ -140,7 +141,7 @@ class Mysql
             [$this->database . '"']
         );
 
-        $exec = array_filter(array_merge(
+        $exec = implode(' ', array_filter(array_merge(
             [$this->ssh],
             $mysqldump,
             [
@@ -148,8 +149,8 @@ class Mysql
                 '| gzip -9'
             ],
             [sprintf('> %s/%s.sql.gz', $this->path, $this->database)]
-        ));
+        )));
 
-        exec(implode(' ', $exec));
+        passthru($exec);
     }
 }

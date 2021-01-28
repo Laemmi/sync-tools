@@ -1,6 +1,9 @@
 path_tmp: .
 
 server:
+  - attributes:
+      mysqldump:
+      rsync:
   - src:
         ssh_host: localhost
         ssh_user:
@@ -10,7 +13,6 @@ server:
         db_user:
         db_pw:
         db_dbname:
-        db_mysqldump_attributes:
     dest:
         db_host: localhost
         db_port: 3306

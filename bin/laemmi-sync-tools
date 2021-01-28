@@ -38,5 +38,6 @@ $application = new Application();
 
 $application->add(new \Laemmi\SyncTools\Command\DatabaseDump());
 $application->add(new \Laemmi\SyncTools\Command\DatabaseImport());
+$application->add(new \Laemmi\SyncTools\Command\FileSync());
 
 $application->run();

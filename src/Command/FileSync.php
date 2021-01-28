@@ -24,7 +24,7 @@
  * @copyright  ©2021 Spacerabbit
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-License
  * @version    1.0.0
- * @since      27.01.21
+ * @since      28.01.21
  */
 
 declare(strict_types=1);
@@ -32,17 +32,17 @@ declare(strict_types=1);
 namespace Laemmi\SyncTools\Command;
 
 use Laemmi\SyncTools\Helper\Config;
-use Laemmi\SyncTools\Service\DatabaseDump\Mysql;
+use Laemmi\SyncTools\Service\FileSync\Rsync;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DatabaseDump extends Command
+class FileSync extends Command
 {
     /**
      * @var string
      */
-    protected static $defaultName = 'database:dump';
+    protected static $defaultName = 'file:sync';
 
     /**
      * @param InputInterface $input
@@ -54,28 +54,24 @@ class DatabaseDump extends Command
         $config = Config::parseFile();
 
         foreach ($config['server'] as $server) {
-            $config['path_tmp'] = realpath($config['path_tmp']);
+            $server['dest']['path_data'] = realpath($server['dest']['path_data']);
 
-            if (!$config['path_tmp']) {
-                throw new \InvalidArgumentException('path_tmp not exists');
+            if (!$server['dest']['path_data']) {
+                throw new \InvalidArgumentException('dest:path_data not exists');
             }
 
             $output->writeln([
-                sprintf('Dump Mysql Database %s > %s', $server['src']['db_dbname'], $config['path_tmp'])
+                sprintf('File sync from %s > %s', $server['src']['ssh_path'], $server['dest']['path_data'])
             ]);
 
-            $service = new Mysql(
-                $server['src']['db_host'],
-                $server['src']['db_user'],
-                $server['src']['db_pw'],
-                $server['src']['db_dbname'],
-                isset($server['src']['db_port']) ? $server['src']['db_port'] : 3306
+            $service = new Rsync(
+                $server['src']['ssh_path'] . '/',
+                $server['dest']['path_data']
             );
 
-            $service->setPath($config['path_tmp']);
             $service->setSshConnection($server['src']['ssh_user'], $server['src']['ssh_host']);
 
-            foreach ($server['attributes']['mysqldump'] as $attribute) {
+            foreach ($server['attributes']['rsync'] as $attribute) {
                 $service->addAttribute($attribute);
             }
 

@@ -25,3 +25,10 @@ Synchronisation, Backup von Datenbanken, Dateien.
         -v ~/.ssh:/root/.ssh:cached \
         -v ${PWD}:/var/www/html:cached \
         registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./bin/laemmi-sync-tools database:import
+
+### File synchronisation
+
+    docker run -it --rm \
+        -v ~/.ssh:/root/.ssh:cached \
+        -v ${PWD}:/var/www/html:cached \
+        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./bin/laemmi-sync-tools file:sync

@@ -24,87 +24,67 @@
  * @copyright  ©2021 Spacerabbit
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-License
  * @version    1.0.0
- * @since      27.01.21
+ * @since      28.01.21
  */
 
 declare(strict_types=1);
 
-namespace Laemmi\SyncTools\Service\DatabaseImport;
+namespace Laemmi\SyncTools\Service\FileSync;
 
-class Mysql
+class Rsync
 {
-    /**
-     * @var string
-     */
-    protected string $host;
-
-    /**
-     * @var string
-     */
-    protected string $user;
-
-    /**
-     * @var string
-     */
-    protected string $password;
-
-    /**
-     * @var string
-     */
-    protected string $database;
-
-    /**
-     * @var int
-     */
-    protected int $port;
-
     /**
      * @var array|string[]
      */
     protected array $attributes = [
+        '--archive',
+        '--compress',
+        '--delete',
+        '--progress',
+        '--verbose',
     ];
 
     /**
      * @var string
      */
-    protected string $path;
+    protected string $src_path;
 
     /**
-     * Mysql constructor.
-     * @param string $host
-     * @param string $user
-     * @param string $password
-     * @param string $database
-     * @param int $port
+     * @var string
      */
-    public function __construct(
-        string $host,
-        string $user,
-        string $password,
-        string $database,
-        int $port = 3306
-    ) {
-        $this->host = $host;
-        $this->user = $user;
-        $this->password = $password;
-        $this->database = $database;
-        $this->port = $port;
+    protected string $dest_path;
+
+    /**
+     * @var
+     */
+    protected string $ssh;
+
+    /**
+     * Rsync constructor.
+     * @param string $src_path
+     * @param string $dest_path
+     */
+    public function __construct(string $src_path, string $dest_path)
+    {
+        $this->src_path = $src_path;
+        $this->dest_path = $dest_path;
     }
 
     /**
-     * @param array $attribute
+     * @param string $attribute
      */
-    public function addAttributes(array $attribute)
+    public function addAttribute(string $attribute)
     {
         $this->attributes[] = $attribute;
     }
 
     /**
-     * @param string $path
+     * @param string $ssh_user
+     * @param string $ssh_host
      */
-    public function setPath(string $path)
+    public function setSshConnection(string $ssh_user, string $ssh_host)
     {
-        $this->path = $path;
+        $this->ssh = sprintf('%s@%s', $ssh_user, $ssh_host);
     }
 
     /**
@@ -112,19 +92,11 @@ class Mysql
      */
     public function execute()
     {
-        $dump = sprintf('%s/%s.sql.gz', $this->path, $this->database);
-
         $exec = implode(' ', array_filter(array_merge(
-            [sprintf('gunzip < %s |', $dump)],
-            ['mysql'],
+            ['rsync'],
             $this->attributes,
-            [
-                sprintf('--host=\"%s\"', $this->host),
-                sprintf('--user=\"%s\"', $this->user),
-                sprintf('--password=\"%s\"', $this->password),
-                sprintf('--port=%s', $this->port),
-            ],
-            [$this->database]
+            [sprintf('%s:%s', $this->ssh, $this->src_path)],
+            [$this->dest_path]
         )));
 
         passthru($exec);
