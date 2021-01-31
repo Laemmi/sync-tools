@@ -112,10 +112,8 @@ class Mysql
      */
     public function execute()
     {
-        $dump = sprintf('%s/%s.sql.gz', $this->path, $this->database);
-
         $exec = implode(' ', array_filter(array_merge(
-            [sprintf('gunzip < %s |', $dump)],
+            [sprintf('gunzip < %s |', $this->path)],
             ['mysql'],
             $this->attributes,
             [
@@ -127,6 +125,7 @@ class Mysql
             [$this->database]
         )));
 
+//        echo $exec;
         passthru($exec);
     }
 }

@@ -24,54 +24,19 @@
  * @copyright  ©2021 Spacerabbit
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-License
  * @version    1.0.0
- * @since      28.01.21
+ * @since      29.01.21
  */
 
 declare(strict_types=1);
 
-namespace Laemmi\SyncTools\Command;
+namespace Laemmi\SyncTools\Helper;
 
-use Laemmi\SyncTools\Helper\Config;
-use Laemmi\SyncTools\Service\FileSync\Rsync;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class FileSync extends Command
+class File
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'file:sync';
+    protected $file_template = '%s/%s.sql.gz';
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function getName()
     {
-        $config = Config::parseFile();
 
-        $output->write(sprintf(
-            'File sync from %s > %s',
-            $config['src']['ssh_path'],
-            $config['dest']['path']
-        ), true);
-
-        $service = new Rsync(
-            $config['src']['ssh_path'] . '/',
-            $config['dest']['path']
-        );
-
-        $service->setSshConnection($config['src']['ssh_user'], $config['src']['ssh_host']);
-
-        foreach ($config['attributes']['rsync'] as $attribute) {
-            $service->addAttribute($attribute);
-        }
-
-        $service->execute();
-
-        return 0;
     }
 }

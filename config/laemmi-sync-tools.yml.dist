@@ -1,22 +1,27 @@
 path_tmp: .
 
-server:
+src:
+  ssh_host:
+  ssh_user:
+  ssh_path:
+
+dest:
+  path:
+
+attributes:
+  rsync:
+    - "--exclude-from=\"./exclude-from.txt\""
+
+databases:
   - attributes:
       mysqldump:
-      rsync:
-  - src:
-        ssh_host: localhost
-        ssh_user:
-        ssh_path: ./
+    src:
         db_host:
-        db_port: 3306
         db_user:
         db_pw:
         db_dbname:
     dest:
-        db_host: localhost
-        db_port: 3306
+        db_host:
         db_user:
         db_pw:
         db_dbname:
-        path_data:

@@ -51,6 +51,28 @@ class Config
             throw new \InvalidArgumentException('No config file found');
         }
 
-        return Yaml::parseFile($file);
+        $config = Yaml::parseFile($file);
+
+        $config['path_tmp'] = realpath($config['path_tmp']);
+
+        if (!$config['path_tmp']) {
+            throw new \InvalidArgumentException('path_tmp not exists');
+        }
+
+        $config['dest']['path'] = realpath($config['dest']['path']);
+
+        if (!$config['dest']['path']) {
+            throw new \InvalidArgumentException('dest:path not exists');
+        }
+
+        foreach ($config['databases'] as $key => $db) {
+            $config['databases'][$key]['src']['db_dump'] = sprintf(
+                '%s/%s.sql.gz',
+                $config['path_tmp'],
+                $db['src']['db_dbname']
+            );
+        }
+
+        return $config;
     }
 }

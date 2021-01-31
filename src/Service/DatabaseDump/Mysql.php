@@ -148,9 +148,10 @@ class Mysql
                 '| sed -e \'s/DEFINER[ ]*=[ ]*[^*]*\*/\*/\'',
                 '| gzip -9'
             ],
-            [sprintf('> %s/%s.sql.gz', $this->path, $this->database)]
+            [sprintf('> %s', $this->path)]
         )));
 
+//        echo $exec;
         passthru($exec);
     }
 }

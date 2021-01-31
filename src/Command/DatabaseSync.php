@@ -24,7 +24,7 @@
  * @copyright  ©2021 Spacerabbit
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-License
  * @version    1.0.0
- * @since      27.01.21
+ * @since      28.01.21
  */
 
 declare(strict_types=1);
@@ -32,17 +32,16 @@ declare(strict_types=1);
 namespace Laemmi\SyncTools\Command;
 
 use Laemmi\SyncTools\Helper\Config;
-use Laemmi\SyncTools\Service\DatabaseImport\Mysql;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DatabaseImport extends Command
+class DatabaseSync extends Command
 {
     /**
      * @var string
      */
-    protected static $defaultName = 'database:import';
+    protected static $defaultName = 'database:sync';
 
     /**
      * @param InputInterface $input
@@ -53,36 +52,18 @@ class DatabaseImport extends Command
     {
         $config = Config::parseFile();
 
+        $output->write('Sync Mysql Database(s)', true);
+
+        $command = $this->getApplication()->find('database:dump');
+        $command->run($input, $output);
+
+        $command = $this->getApplication()->find('database:import');
+        $command->run($input, $output);
+
+        // GC
         foreach ($config['databases'] as $db) {
-            $service = new Mysql(
-                $db['dest']['db_host'],
-                $db['dest']['db_user'],
-                $db['dest']['db_pw'],
-                $db['dest']['db_dbname'],
-                isset($db['dest']['db_port']) ? $db['dest']['db_port'] : 3306
-            );
-
             if (is_file($db['src']['db_dump'])) {
-                $output->write(sprintf(
-                    'Import Mysql Database %s < %s',
-                    $db['dest']['db_dbname'],
-                    $db['src']['db_dump']
-                ), true);
-
-                $service->setPath($db['src']['db_dump']);
-                $service->execute();
-            }
-
-            $db['dest']['additional_dump'] = realpath($db['dest']['additional_dump']);
-            if ($db['dest']['additional_dump']) {
-                $output->write(sprintf(
-                    'Additional dump Mysql Database %s < %s',
-                    $db['dest']['db_dbname'],
-                    $db['dest']['additional_dump']
-                ), true);
-
-                $service->setPath($db['dest']['additional_dump']);
-                $service->execute();
+                unlink($db['src']['db_dump']);
             }
         }
 
