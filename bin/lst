@@ -35,8 +35,15 @@ require __DIR__ . '/../vendor/autoload.php';
 use Symfony\Component\Console\Application;
 
 $application = new Application();
+$config = new \Laemmi\SyncTools\Helper\Config(
+        __DIR__ . '/../config/lst-config.yml',
+    new \Symfony\Component\Yaml\Parser()
+);
 
-$application->add(new \Laemmi\SyncTools\Command\DatabaseDump());
+$application->add(new \Laemmi\SyncTools\Command\DatabaseDump(
+        $config,
+        new \Laemmi\SyncTools\Service\DatabaseDump\Mysql())
+);
 $application->add(new \Laemmi\SyncTools\Command\DatabaseImport());
 $application->add(new \Laemmi\SyncTools\Command\DatabaseSync());
 $application->add(new \Laemmi\SyncTools\Command\FileSync());

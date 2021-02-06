@@ -31,27 +31,40 @@ declare(strict_types=1);
 
 namespace Laemmi\SyncTools\Helper;
 
+use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
 
 class Config
 {
-    public static function parseFile(): array
+    /**
+     * @var string
+     */
+    protected string $file;
+
+    /**
+     * @var Parser
+     */
+    protected Parser $parser;
+
+    /**
+     * Config constructor.
+     * @param string $file
+     * @param Parser $parser
+     */
+    public function __construct(string $file, Parser $parser)
     {
-        $subdir = '/..';
-        foreach (range(0, 5) as $val) {
-            $file = __DIR__ . $subdir . '/config/laemmi-sync-tools.yml';
-            $subdir .= $subdir;
-
-            if (is_file($file)) {
-                break;
-            }
-        }
-
         if (!is_file($file)) {
             throw new \InvalidArgumentException('No config file found');
         }
 
-        $config = Yaml::parseFile($file);
+        $this->file = $file;
+
+        $this->parser = $parser;
+    }
+
+    public function parseFile(): array
+    {
+        $config = $this->parser->parseFile($this->file);
 
         $config['path_tmp'] = realpath($config['path_tmp']);
 

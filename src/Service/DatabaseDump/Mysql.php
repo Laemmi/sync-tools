@@ -56,7 +56,7 @@ class Mysql
     /**
      * @var int
      */
-    protected int $port;
+    protected int $port = 3306;
 
     /**
      * @var array|string[]
@@ -73,30 +73,121 @@ class Mysql
     protected string $path;
 
     /**
-     * @var
+     * @var string
      */
     protected string $ssh;
 
     /**
-     * Mysql constructor.
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    /**
      * @param string $host
+     */
+    public function setHost(string $host): void
+    {
+        $this->host = $host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser(): string
+    {
+        return $this->user;
+    }
+
+    /**
      * @param string $user
+     */
+    public function setUser(string $user): void
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
      * @param string $password
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDatabase(): string
+    {
+        return $this->database;
+    }
+
+    /**
      * @param string $database
+     */
+    public function setDatabase(string $database): void
+    {
+        $this->database = $database;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPort(): int
+    {
+        return $this->port;
+    }
+
+    /**
      * @param int $port
      */
-    public function __construct(
-        string $host,
-        string $user,
-        string $password,
-        string $database,
-        int $port = 3306
-    ) {
-        $this->host = $host;
-        $this->user = $user;
-        $this->password = $password;
-        $this->database = $database;
+    public function setPort(int $port): void
+    {
         $this->port = $port;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param array|string[] $attributes
+     */
+    public function setAttributes(array $attributes): void
+    {
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSsh(): string
+    {
+        return $this->ssh;
+    }
+
+    /**
+     * @param string $ssh_user
+     * @param string $ssh_host
+     */
+    public function setSsh(string $ssh_user, string $ssh_host): void
+    {
+        $this->ssh = sprintf('ssh %s@%s', $ssh_user, $ssh_host);
     }
 
     /**
@@ -110,18 +201,17 @@ class Mysql
     /**
      * @param string $path
      */
-    public function setPath(string $path)
+    public function setPath(string $path): void
     {
         $this->path = $path;
     }
 
     /**
-     * @param string $ssh_user
-     * @param string $ssh_host
+     * @return string
      */
-    public function setSshConnection(string $ssh_user, string $ssh_host)
+    public function getPath(): string
     {
-        $this->ssh = sprintf('ssh %s@%s', $ssh_user, $ssh_host);
+        return $this->path;
     }
 
     /**
@@ -133,22 +223,22 @@ class Mysql
             ['"mysqldump'],
             $this->attributes,
             [
-                sprintf('--host=\"%s\"', $this->host),
-                sprintf('--user=\"%s\"', $this->user),
-                sprintf('--password=\"%s\"', $this->password),
-                sprintf('--port=%s', $this->port),
+                sprintf('--host=\"%s\"', $this->getHost()),
+                sprintf('--user=\"%s\"', $this->getUser()),
+                sprintf('--password=\"%s\"', $this->getPassword()),
+                sprintf('--port=%s', $this->getPort()),
             ],
-            [$this->database . '"']
+            [$this->getDatabase() . '"']
         );
 
         $exec = implode(' ', array_filter(array_merge(
-            [$this->ssh],
+            [$this->getSsh()],
             $mysqldump,
             [
                 '| sed -e \'s/DEFINER[ ]*=[ ]*[^*]*\*/\*/\'',
                 '| gzip -9'
             ],
-            [sprintf('> %s', $this->path)]
+            [sprintf('> %s', $this->getPath())]
         )));
 
 //        echo $exec;

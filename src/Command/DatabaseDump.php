@@ -45,13 +45,36 @@ class DatabaseDump extends Command
     protected static $defaultName = 'database:dump';
 
     /**
+     * @var Config
+     */
+    protected Config $config;
+
+    /**
+     * @var Mysql
+     */
+    protected Mysql $service;
+
+    /**
+     * DatabaseDump constructor.
+     * @param Config $config
+     * @param Mysql $service
+     */
+    public function __construct(Config $config, Mysql $service)
+    {
+        parent::__construct();
+
+        $this->config = $config;
+        $this->service = $service;
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = Config::parseFile();
+        $config = $this->config->parseFile();
 
         foreach ($config['databases'] as $db) {
             $output->write(sprintf(
@@ -60,16 +83,15 @@ class DatabaseDump extends Command
                 $db['src']['db_dump']
             ), true);
 
-            $service = new Mysql(
-                $db['src']['db_host'],
-                $db['src']['db_user'],
-                $db['src']['db_pw'],
-                $db['src']['db_dbname'],
-                isset($db['src']['db_port']) ? $db['src']['db_port'] : 3306
-            );
+            $service = clone $this->service;
 
+            $service->setHost($db['src']['db_host']);
+            $service->setUser($db['src']['db_user']);
+            $service->setPassword($db['src']['db_pw']);
+            $service->setDatabase($db['src']['db_dbname']);
+            $service->setPort(isset($db['src']['db_port']) ? $db['src']['db_port'] : 3306);
             $service->setPath($db['src']['db_dump']);
-            $service->setSshConnection($config['src']['ssh_user'], $config['src']['ssh_host']);
+            $service->setSsh($config['src']['ssh_user'], $config['src']['ssh_host']);
 
             foreach ($db['attributes']['mysqldump'] as $attribute) {
                 $service->addAttribute($attribute);

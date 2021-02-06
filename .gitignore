@@ -1,5 +1,5 @@
 .idea
-/config/laemmi-sync-tools.yml
+/config/lst-config.yml
 /data/
 /vendor/
 /.phpunit.result.cache

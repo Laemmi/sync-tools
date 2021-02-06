@@ -1,4 +1,4 @@
-path_tmp: .
+path_tmp: 'tmp'
 
 src:
   ssh_host:
@@ -6,7 +6,7 @@ src:
   ssh_path:
 
 dest:
-  path:
+  path: 'data'
 
 attributes:
   rsync:
