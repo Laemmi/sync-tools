@@ -31,32 +31,32 @@ Sync files from remote to local destination.
 
     ./vendor/lst file:sync
 
-## Test locally
+## Test locally with docker
 
 ### Database dump
 
     docker run -it --rm \
         -v ~/.ssh:/root/.ssh:cached \
         -v ${PWD}:/var/www/html:cached \
-        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./bin/laemmi-sync-tools database:dump
+        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./vendor/bin/lst database:dump
 
 ### Database import
     
     docker run -it --rm \
         -v ~/.ssh:/root/.ssh:cached \
         -v ${PWD}:/var/www/html:cached \
-        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./bin/laemmi-sync-tools database:import
+        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./vendor/bin/lst database:import
 
 ### Database synchronisation
 
     docker run -it --rm \
         -v ~/.ssh:/root/.ssh:cached \
         -v ${PWD}:/var/www/html:cached \
-        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./bin/laemmi-sync-tools database:sync
+        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./vendor/bin/lst database:sync
 
 ### File synchronisation
 
     docker run -it --rm \
         -v ~/.ssh:/root/.ssh:cached \
         -v ${PWD}:/var/www/html:cached \
-        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./bin/laemmi-sync-tools file:sync
+        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./vendor/bin/lst file:sync
