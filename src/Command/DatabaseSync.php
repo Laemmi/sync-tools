@@ -44,14 +44,28 @@ class DatabaseSync extends Command
     protected static $defaultName = 'database:sync';
 
     /**
+     * @var Config
+     */
+    protected Config $config;
+
+    /**
+     * DatabaseImport constructor.
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        parent::__construct();
+
+        $this->config = $config;
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = Config::parseFile();
-
         $output->write('Sync Mysql Database(s)', true);
 
         $command = $this->getApplication()->find('database:dump');
@@ -60,10 +74,12 @@ class DatabaseSync extends Command
         $command = $this->getApplication()->find('database:import');
         $command->run($input, $output);
 
-        // GC
-        foreach ($config['databases'] as $db) {
-            if (is_file($db['src']['db_dump'])) {
-                unlink($db['src']['db_dump']);
+        /**
+         * @var Config\DatabaseItem $db
+         */
+        foreach ($this->config->databases as $db) {
+            if (is_file($db->src_db_dump)) {
+                unlink($db->src_db_dump);
             }
         }
 

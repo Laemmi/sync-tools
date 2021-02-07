@@ -58,7 +58,9 @@ $application->add(new DatabaseImport(
         $config,
         new MysqlImport()
 ));
-$application->add(new DatabaseSync());
+$application->add(new DatabaseSync(
+        $config
+));
 $application->add(new FileSync(
         $config,
         new RsyncFile()
