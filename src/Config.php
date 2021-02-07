@@ -29,10 +29,10 @@
 
 declare(strict_types=1);
 
-namespace Laemmi\SyncTools\Helper;
+namespace Laemmi\SyncTools;
 
+use Laemmi\SyncTools\Config\DatabaseItem;
 use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Yaml\Yaml;
 
 class Config
 {
@@ -45,6 +45,41 @@ class Config
      * @var Parser
      */
     protected Parser $parser;
+
+    /**
+     * @var string
+     */
+    public string $path_tmp;
+
+    /**
+     * @var string
+     */
+    public string $src_ssh_host;
+
+    /**
+     * @var string
+     */
+    public string $src_ssh_user;
+
+    /**
+     * @var string
+     */
+    public string $src_ssh_path;
+
+    /**
+     * @var string
+     */
+    public string $dest_path;
+
+    /**
+     * @var array
+     */
+    public array $attributes_rsync;
+
+    /**
+     * @var array
+     */
+    public array $databases;
 
     /**
      * Config constructor.
@@ -60,30 +95,57 @@ class Config
         $this->file = $file;
 
         $this->parser = $parser;
+
+        $this->parseFile();
     }
 
-    public function parseFile(): array
+    /**
+     * @return array
+     */
+    protected function parseFile(): array
     {
         $config = $this->parser->parseFile($this->file);
 
-        $config['path_tmp'] = realpath($config['path_tmp']);
+        $this->path_tmp = realpath($config['path_tmp']);
 
-        if (!$config['path_tmp']) {
+        if (!$this->path_tmp) {
             throw new \InvalidArgumentException('path_tmp not exists');
         }
 
-        $config['dest']['path'] = realpath($config['dest']['path']);
+        $this->dest_path = realpath($config['dest']['path']);
 
-        if (!$config['dest']['path']) {
+        if (!$this->dest_path) {
             throw new \InvalidArgumentException('dest:path not exists');
         }
 
+        $this->src_ssh_host = $config['src']['ssh_host'];
+        $this->src_ssh_user = $config['src']['ssh_user'];
+        $this->src_ssh_path = $config['src']['ssh_path'];
+
+        $this->attributes_rsync = $config['attributes']['rsync'];
+
         foreach ($config['databases'] as $key => $db) {
-            $config['databases'][$key]['src']['db_dump'] = sprintf(
+            $item = new DatabaseItem();
+            $item->attributes_mysqldump = $db['attributes']['mysqldump'];
+
+            $item->src_db_host = $db['src']['db_host'];
+            $item->src_db_port = isset($db['src']['db_port']) ? $db['src']['db_port'] : 3306;
+            $item->src_db_user = $db['src']['db_user'];
+            $item->src_db_pw = $db['src']['db_pw'];
+            $item->src_db_dbname = $db['src']['db_dbname'];
+            $item->src_db_dump = sprintf(
                 '%s/%s.sql.gz',
-                $config['path_tmp'],
-                $db['src']['db_dbname']
+                $this->path_tmp,
+                $item->src_db_dbname
             );
+
+            $item->dest_db_host = $db['dest']['db_host'];
+            $item->dest_db_port = isset($db['dest']['db_port']) ? $db['dest']['db_port'] : 3306;
+            $item->dest_db_user = $db['dest']['db_user'];
+            $item->dest_db_pw = $db['dest']['db_pw'];
+            $item->dest_db_dbname = $db['dest']['db_dbname'];
+
+            $this->databases[] = $item;
         }
 
         return $config;

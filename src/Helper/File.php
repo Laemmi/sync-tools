@@ -29,7 +29,7 @@
 
 declare(strict_types=1);
 
-namespace Laemmi\SyncTools\Helper;
+namespace Laemmi\SyncTools;
 
 class File
 {

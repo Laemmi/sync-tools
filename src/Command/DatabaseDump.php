@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace Laemmi\SyncTools\Command;
 
-use Laemmi\SyncTools\Helper\Config;
+use Laemmi\SyncTools\Config;
 use Laemmi\SyncTools\Service\DatabaseDump\Mysql;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -74,26 +74,27 @@ class DatabaseDump extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $this->config->parseFile();
-
-        foreach ($config['databases'] as $db) {
+        /**
+         * @var Config\DatabaseItem $db
+         */
+        foreach ($this->config->databases as $db) {
             $output->write(sprintf(
                 'Dump Mysql Database %s > %s',
-                $db['src']['db_dbname'],
-                $db['src']['db_dump']
+                $db->src_db_dbname,
+                $db->src_db_dump,
             ), true);
 
             $service = clone $this->service;
 
-            $service->setHost($db['src']['db_host']);
-            $service->setUser($db['src']['db_user']);
-            $service->setPassword($db['src']['db_pw']);
-            $service->setDatabase($db['src']['db_dbname']);
-            $service->setPort(isset($db['src']['db_port']) ? $db['src']['db_port'] : 3306);
-            $service->setPath($db['src']['db_dump']);
-            $service->setSsh($config['src']['ssh_user'], $config['src']['ssh_host']);
+            $service->setHost($db->src_db_host);
+            $service->setUser($db->src_db_user);
+            $service->setPassword($db->src_db_pw);
+            $service->setDatabase($db->src_db_dbname);
+            $service->setPort($db->src_db_port);
+            $service->setPath($db->src_db_dump);
+            $service->setSsh($this->config->src_ssh_user, $this->config->src_ssh_host);
 
-            foreach ($db['attributes']['mysqldump'] as $attribute) {
+            foreach ($db->attributes_mysqldump as $attribute) {
                 $service->addAttribute($attribute);
             }
 

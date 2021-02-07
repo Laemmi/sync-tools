@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace Laemmi\SyncTools\Command;
 
-use Laemmi\SyncTools\Helper\Config;
+use Laemmi\SyncTools\Config;
 use Laemmi\SyncTools\Service\FileSync\Rsync;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

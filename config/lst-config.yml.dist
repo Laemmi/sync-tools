@@ -20,8 +20,10 @@ databases:
         db_user:
         db_pw:
         db_dbname:
+        db_port
     dest:
         db_host:
         db_user:
         db_pw:
         db_dbname:
+        db_port:

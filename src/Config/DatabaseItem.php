@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 /**
@@ -21,31 +20,76 @@
  * IN THE SOFTWARE.
  *
  * @package    sync-tools
- * @author     Michael Lämmlein <laemmi@spacerabbit.de>
- * @copyright  ©2021 Spacerabbit
+ * @author     Michael Lämmlein <michael.laemmlein@liebscher-bracht.com>
+ * @copyright  ©2021 Liebscher & Bracht
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-License
  * @version    1.0.0
- * @since      27.01.21
+ * @since      07.02.21
  */
 
 declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
+namespace Laemmi\SyncTools\Config;
 
-use Symfony\Component\Console\Application;
+class DatabaseItem
+{
+    /**
+     * @var array
+     */
+    public array $attributes_mysqldump;
 
-$application = new Application();
-$config = new \Laemmi\SyncTools\Config(
-        __DIR__ . '/../config/lst-config.yml',
-    new \Symfony\Component\Yaml\Parser()
-);
+    /**
+     * @var string
+     */
+    public string $src_db_host = 'localhost';
 
-$application->add(new \Laemmi\SyncTools\Command\DatabaseDump(
-        $config,
-        new \Laemmi\SyncTools\Service\DatabaseDump\Mysql())
-);
-$application->add(new \Laemmi\SyncTools\Command\DatabaseImport());
-$application->add(new \Laemmi\SyncTools\Command\DatabaseSync());
-$application->add(new \Laemmi\SyncTools\Command\FileSync());
+    /**
+     * @var int
+     */
+    public int $src_db_port = 3306;
 
-$application->run();
+    /**
+     * @var string
+     */
+    public string $src_db_user;
+
+    /**
+     * @var string
+     */
+    public string $src_db_pw;
+
+    /**
+     * @var string
+     */
+    public string $src_db_dbname;
+
+    /**
+     * @var string
+     */
+    public string $src_db_dump;
+
+    /**
+     * @var string
+     */
+    public string $dest_db_host = 'localhost';
+
+    /**
+     * @var int
+     */
+    public int $dest_db_port = 3306;
+
+    /**
+     * @var string
+     */
+    public string $dest_db_user;
+
+    /**
+     * @var string
+     */
+    public string $dest_db_pw;
+
+    /**
+     * @var string
+     */
+    public string $dest_db_dbname;
+}
