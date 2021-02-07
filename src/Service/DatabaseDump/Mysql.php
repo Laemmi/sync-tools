@@ -31,8 +31,12 @@ declare(strict_types=1);
 
 namespace Laemmi\SyncTools\Service\DatabaseDump;
 
+use Laemmi\SyncTools\Service\ServiceTrait;
+
 class Mysql
 {
+    use ServiceTrait;
+
     /**
      * @var string
      */
@@ -241,7 +245,6 @@ class Mysql
             [sprintf('> %s', $this->getPath())]
         )));
 
-//        echo $exec;
-        passthru($exec);
+        $this->executeCommand($exec);
     }
 }

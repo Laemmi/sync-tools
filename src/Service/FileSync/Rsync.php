@@ -31,8 +31,12 @@ declare(strict_types=1);
 
 namespace Laemmi\SyncTools\Service\FileSync;
 
+use Laemmi\SyncTools\Service\ServiceTrait;
+
 class Rsync
 {
+    use ServiceTrait;
+
     /**
      * @var array|string[]
      */
@@ -161,7 +165,6 @@ class Rsync
             [$this->getDestPath()]
         )));
 
-//        echo $exec;
-        passthru($exec);
+        $this->executeCommand($exec);
     }
 }

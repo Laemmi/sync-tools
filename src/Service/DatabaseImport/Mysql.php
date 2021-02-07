@@ -31,8 +31,12 @@ declare(strict_types=1);
 
 namespace Laemmi\SyncTools\Service\DatabaseImport;
 
+use Laemmi\SyncTools\Service\ServiceTrait;
+
 class Mysql
 {
+    use ServiceTrait;
+
     /**
      * @var string
      */
@@ -198,7 +202,6 @@ class Mysql
             [$this->getDatabase()]
         )));
 
-//        echo $exec;
-        passthru($exec);
+        $this->executeCommand($exec);
     }
 }

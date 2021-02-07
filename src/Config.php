@@ -37,6 +37,11 @@ use Symfony\Component\Yaml\Parser;
 class Config
 {
     /**
+     * @var bool
+     */
+    public bool $debug;
+
+    /**
      * @var string
      */
     protected string $file;
@@ -105,6 +110,8 @@ class Config
     protected function parseFile(): array
     {
         $config = $this->parser->parseFile($this->file);
+
+        $this->debug = $config['debug'];
 
         $this->path_tmp = realpath($config['path_tmp']);
 

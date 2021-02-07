@@ -86,6 +86,8 @@ class DatabaseDump extends Command
 
             $service = clone $this->service;
 
+            $service->setDebug($this->config->debug);
+
             $service->setHost($db->src_db_host);
             $service->setUser($db->src_db_user);
             $service->setPassword($db->src_db_pw);
