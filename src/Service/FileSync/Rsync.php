@@ -47,7 +47,17 @@ class Rsync
     /**
      * @var string
      */
-    protected string $src_path;
+    protected string $src_ssh_path;
+
+    /**
+     * @var string
+     */
+    protected string $src_ssh_user;
+
+    /**
+     * @var string
+     */
+    protected string $src_ssh_host;
 
     /**
      * @var string
@@ -55,19 +65,75 @@ class Rsync
     protected string $dest_path;
 
     /**
-     * @var
+     * @return string
      */
-    protected string $ssh;
+    public function getSrcSshPath(): string
+    {
+        return $this->src_ssh_path;
+    }
 
     /**
-     * Rsync constructor.
-     * @param string $src_path
+     * @param string $src_ssh_path
+     */
+    public function setSrcSshPath(string $src_ssh_path): void
+    {
+        $this->src_ssh_path = $src_ssh_path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSrcSshUser(): string
+    {
+        return $this->src_ssh_user;
+    }
+
+    /**
+     * @param string $src_ssh_user
+     */
+    public function setSrcSshUser(string $src_ssh_user): void
+    {
+        $this->src_ssh_user = $src_ssh_user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSrcSshHost(): string
+    {
+        return $this->src_ssh_host;
+    }
+
+    /**
+     * @param string $src_ssh_host
+     */
+    public function setSrcSshHost(string $src_ssh_host): void
+    {
+        $this->src_ssh_host = $src_ssh_host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDestPath(): string
+    {
+        return $this->dest_path;
+    }
+
+    /**
      * @param string $dest_path
      */
-    public function __construct(string $src_path, string $dest_path)
+    public function setDestPath(string $dest_path): void
     {
-        $this->src_path = $src_path;
         $this->dest_path = $dest_path;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 
     /**
@@ -79,26 +145,23 @@ class Rsync
     }
 
     /**
-     * @param string $ssh_user
-     * @param string $ssh_host
-     */
-    public function setSshConnection(string $ssh_user, string $ssh_host)
-    {
-        $this->ssh = sprintf('%s@%s', $ssh_user, $ssh_host);
-    }
-
-    /**
      * Execute
      */
     public function execute()
     {
         $exec = implode(' ', array_filter(array_merge(
             ['rsync'],
-            $this->attributes,
-            [sprintf('%s:%s', $this->ssh, $this->src_path)],
-            [$this->dest_path]
+            $this->getAttributes(),
+            [sprintf(
+                '%s@%s:%s',
+                $this->getSrcSshUser(),
+                $this->getSrcSshHost(),
+                $this->getSrcSshPath()
+            )],
+            [$this->getDestPath()]
         )));
 
+//        echo $exec;
         passthru($exec);
     }
 }

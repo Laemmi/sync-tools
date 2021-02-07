@@ -45,32 +45,51 @@ class FileSync extends Command
     protected static $defaultName = 'file:sync';
 
     /**
+     * @var Config
+     */
+    protected Config $config;
+
+    /**
+     * @var
+     */
+    protected Rsync $service;
+
+    /**
+     * DatabaseImport constructor.
+     * @param Config $config
+     * @param Rsync $service
+     */
+    public function __construct(Config $config, Rsync $service)
+    {
+        parent::__construct();
+
+        $this->config = $config;
+        $this->service = $service;
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = Config::parseFile();
-
         $output->write(sprintf(
             'File sync from %s > %s',
-            $config['src']['ssh_path'],
-            $config['dest']['path']
+            $this->config->src_ssh_path,
+            $this->config->dest_path
         ), true);
 
-        $service = new Rsync(
-            $config['src']['ssh_path'] . '/',
-            $config['dest']['path']
-        );
+        $this->service->setSrcSshPath($this->config->src_ssh_path);
+        $this->service->setSrcSshUser($this->config->src_ssh_user);
+        $this->service->setSrcSshHost($this->config->src_ssh_host);
+        $this->service->setDestPath($this->config->dest_path);
 
-        $service->setSshConnection($config['src']['ssh_user'], $config['src']['ssh_host']);
-
-        foreach ($config['attributes']['rsync'] as $attribute) {
-            $service->addAttribute($attribute);
+        foreach ($this->config->attributes_rsync as $attribute) {
+            $this->service->addAttribute($attribute);
         }
 
-        $service->execute();
+        $this->service->execute();
 
         return 0;
     }

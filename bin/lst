@@ -30,25 +30,38 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
+require getcwd() . '/vendor/autoload.php';
 
+use Laemmi\SyncTools\Command\DatabaseDump;
+use Laemmi\SyncTools\Command\DatabaseImport;
+use Laemmi\SyncTools\Command\DatabaseSync;
+use Laemmi\SyncTools\Command\FileSync;
+use Laemmi\SyncTools\Config;
+use Laemmi\SyncTools\Service\DatabaseDump\Mysql as MysqlDump;
+use Laemmi\SyncTools\Service\DatabaseImport\Mysql as MysqlImport;
+use Laemmi\SyncTools\Service\FileSync\Rsync as RsyncFile;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Yaml\Parser;
 
 $application = new Application();
-$config = new \Laemmi\SyncTools\Config(
-        __DIR__ . '/../config/lst-config.yml',
-    new \Symfony\Component\Yaml\Parser()
+
+$config = new Config(
+    getcwd() . '/config/lst-config.yml',
+        new Parser()
 );
 
-$application->add(new \Laemmi\SyncTools\Command\DatabaseDump(
+$application->add(new DatabaseDump(
         $config,
-        new \Laemmi\SyncTools\Service\DatabaseDump\Mysql())
+        new MysqlDump())
 );
-$application->add(new \Laemmi\SyncTools\Command\DatabaseImport(
+$application->add(new DatabaseImport(
         $config,
-        new Laemmi\SyncTools\Service\DatabaseImport\Mysql()
+        new MysqlImport()
 ));
-$application->add(new \Laemmi\SyncTools\Command\DatabaseSync());
-$application->add(new \Laemmi\SyncTools\Command\FileSync());
+$application->add(new DatabaseSync());
+$application->add(new FileSync(
+        $config,
+        new RsyncFile()
+));
 
 $application->run();

@@ -198,7 +198,7 @@ class Mysql
             [$this->getDatabase()]
         )));
 
-        echo $exec;
-//        passthru($exec);
+//        echo $exec;
+        passthru($exec);
     }
 }
