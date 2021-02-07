@@ -1,6 +1,3 @@
-[![pipeline status](https://gitlab.com/laemmi/sync-tools/badges/master/pipeline.svg)](https://gitlab.com/laemmi/sync-tools/-/commits/master)
-[![coverage report](https://gitlab.com/laemmi/sync-tools/badges/master/coverage.svg)](https://gitlab.com/laemmi/sync-tools/-/commits/master)
-
 # Sync tools 
 
 ## Description
