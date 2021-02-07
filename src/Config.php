@@ -144,6 +144,7 @@ class Config
             $item->dest_db_user = $db['dest']['db_user'];
             $item->dest_db_pw = $db['dest']['db_pw'];
             $item->dest_db_dbname = $db['dest']['db_dbname'];
+            $item->dest_additional_dump = (string) realpath($db['dest']['additional_dump']);
 
             $this->databases[] = $item;
         }

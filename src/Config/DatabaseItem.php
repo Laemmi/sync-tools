@@ -92,4 +92,9 @@ class DatabaseItem
      * @var string
      */
     public string $dest_db_dbname;
+
+    /**
+     * @var string
+     */
+    public string $dest_additional_dump;
 }

@@ -97,17 +97,16 @@ class DatabaseImport extends Command
                 $service->execute();
             }
 
-//            $db['dest']['additional_dump'] = realpath($db['dest']['additional_dump']);
-//            if ($db['dest']['additional_dump']) {
-//                $output->write(sprintf(
-//                    'Additional dump Mysql Database %s < %s',
-//                    $db['dest']['db_dbname'],
-//                    $db['dest']['additional_dump']
-//                ), true);
-//
-//                $service->setPath($db['dest']['additional_dump']);
-//                $service->execute();
-//            }
+            if ($db->dest_additional_dump) {
+                $output->write(sprintf(
+                    'Additional dump Mysql Database %s < %s',
+                    $db->dest_db_dbname,
+                    $db->dest_additional_dump
+                ), true);
+
+                $service->setPath($db->dest_additional_dump);
+                $service->execute();
+            }
         }
 
         return 0;
