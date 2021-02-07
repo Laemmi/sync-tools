@@ -61,8 +61,7 @@ class Mysql
     /**
      * @var array|string[]
      */
-    protected array $attributes = [
-    ];
+    protected array $attributes = [];
 
     /**
      * @var string
@@ -70,25 +69,91 @@ class Mysql
     protected string $path;
 
     /**
-     * Mysql constructor.
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    /**
      * @param string $host
+     */
+    public function setHost(string $host): void
+    {
+        $this->host = $host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser(): string
+    {
+        return $this->user;
+    }
+
+    /**
      * @param string $user
+     */
+    public function setUser(string $user): void
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
      * @param string $password
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDatabase(): string
+    {
+        return $this->database;
+    }
+
+    /**
      * @param string $database
+     */
+    public function setDatabase(string $database): void
+    {
+        $this->database = $database;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPort(): int
+    {
+        return $this->port;
+    }
+
+    /**
      * @param int $port
      */
-    public function __construct(
-        string $host,
-        string $user,
-        string $password,
-        string $database,
-        int $port = 3306
-    ) {
-        $this->host = $host;
-        $this->user = $user;
-        $this->password = $password;
-        $this->database = $database;
+    public function setPort(int $port): void
+    {
         $this->port = $port;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 
     /**
@@ -97,6 +162,14 @@ class Mysql
     public function addAttributes(array $attribute)
     {
         $this->attributes[] = $attribute;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
     }
 
     /**
@@ -113,19 +186,19 @@ class Mysql
     public function execute()
     {
         $exec = implode(' ', array_filter(array_merge(
-            [sprintf('gunzip < %s |', $this->path)],
+            [sprintf('gunzip < %s |', $this->getPath())],
             ['mysql'],
-            $this->attributes,
+            $this->getAttributes(),
             [
-                sprintf('--host=\"%s\"', $this->host),
-                sprintf('--user=\"%s\"', $this->user),
-                sprintf('--password=\"%s\"', $this->password),
-                sprintf('--port=%s', $this->port),
+                sprintf('--host=\"%s\"', $this->getHost()),
+                sprintf('--user=\"%s\"', $this->getUser()),
+                sprintf('--password=\"%s\"', $this->getPassword()),
+                sprintf('--port=%s', $this->getPort()),
             ],
-            [$this->database]
+            [$this->getDatabase()]
         )));
 
-//        echo $exec;
-        passthru($exec);
+        echo $exec;
+//        passthru($exec);
     }
 }

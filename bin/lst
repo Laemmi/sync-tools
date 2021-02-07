@@ -44,7 +44,10 @@ $application->add(new \Laemmi\SyncTools\Command\DatabaseDump(
         $config,
         new \Laemmi\SyncTools\Service\DatabaseDump\Mysql())
 );
-$application->add(new \Laemmi\SyncTools\Command\DatabaseImport());
+$application->add(new \Laemmi\SyncTools\Command\DatabaseImport(
+        $config,
+        new Laemmi\SyncTools\Service\DatabaseImport\Mysql()
+));
 $application->add(new \Laemmi\SyncTools\Command\DatabaseSync());
 $application->add(new \Laemmi\SyncTools\Command\FileSync());
 

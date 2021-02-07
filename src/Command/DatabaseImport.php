@@ -45,45 +45,69 @@ class DatabaseImport extends Command
     protected static $defaultName = 'database:import';
 
     /**
+     * @var Config
+     */
+    protected Config $config;
+
+    /**
+     * @var Mysql
+     */
+    protected Mysql $service;
+
+    /**
+     * DatabaseImport constructor.
+     * @param Config $config
+     * @param Mysql $service
+     */
+    public function __construct(Config $config, Mysql $service)
+    {
+        parent::__construct();
+
+        $this->config = $config;
+        $this->service = $service;
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = Config::parseFile();
+        /**
+         * @var Config\DatabaseItem $db
+         */
+        foreach ($this->config->databases as $db) {
+            $service = clone $this->service;
 
-        foreach ($config['databases'] as $db) {
-            $service = new Mysql(
-                $db['dest']['db_host'],
-                $db['dest']['db_user'],
-                $db['dest']['db_pw'],
-                $db['dest']['db_dbname'],
-                isset($db['dest']['db_port']) ? $db['dest']['db_port'] : 3306
-            );
+            $service->setHost($db->src_db_host);
+            $service->setUser($db->src_db_user);
+            $service->setPassword($db->src_db_pw);
+            $service->setDatabase($db->src_db_dbname);
+            $service->setPort($db->src_db_port);
 
-            if (is_file($db['src']['db_dump'])) {
+            if (is_file($db->src_db_dump)) {
                 $output->write(sprintf(
                     'Import Mysql Database %s < %s',
-                    $db['dest']['db_dbname'],
-                    $db['src']['db_dump']
+                    $db->dest_db_dbname,
+                    $db->src_db_dump
                 ), true);
 
-                $service->setPath($db['src']['db_dump']);
+                $service->setPath($db->src_db_dump);
                 $service->execute();
             }
 
-            $db['dest']['additional_dump'] = realpath($db['dest']['additional_dump']);
-            if ($db['dest']['additional_dump']) {
-                $output->write(sprintf(
-                    'Additional dump Mysql Database %s < %s',
-                    $db['dest']['db_dbname'],
-                    $db['dest']['additional_dump']
-                ), true);
-
-                $service->setPath($db['dest']['additional_dump']);
-                $service->execute();
-            }
+//            $db['dest']['additional_dump'] = realpath($db['dest']['additional_dump']);
+//            if ($db['dest']['additional_dump']) {
+//                $output->write(sprintf(
+//                    'Additional dump Mysql Database %s < %s',
+//                    $db['dest']['db_dbname'],
+//                    $db['dest']['additional_dump']
+//                ), true);
+//
+//                $service->setPath($db['dest']['additional_dump']);
+//                $service->execute();
+//            }
         }
 
         return 0;
