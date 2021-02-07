@@ -189,8 +189,20 @@ class Mysql
      */
     public function execute()
     {
+        $file_parts = pathinfo($this->getPath());
+
+        switch($file_parts['extension']) {
+            case "gz":
+                $command = 'gunzip < %s |';
+                break;
+            case "sql":
+            default:
+                $command = 'cat %s |';
+                break;
+        }
+
         $exec = implode(' ', array_filter(array_merge(
-            [sprintf('gunzip < %s |', $this->getPath())],
+            [sprintf($command, $this->getPath())],
             ['mysql'],
             $this->getAttributes(),
             [
