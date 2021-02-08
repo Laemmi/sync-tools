@@ -1,32 +1,32 @@
 debug: false
 
-path_tmp: 'tmp'
+path_tmp: './tmp'
 
 src:
-  ssh_host:
-  ssh_user:
-  ssh_path:
+  ssh_host: ''
+  ssh_user: ''
+  ssh_path: ''
 
 dest:
-  path: 'data'
+  path: './data'
 
 attributes:
   rsync:
-    - "--exclude-from=\"./exclude-from.txt\""
+    - '--exclude-from="./exclude-from.txt"'
 
 databases:
   - attributes:
       mysqldump:
     src:
-        db_host:
-        db_user:
-        db_pw:
-        db_dbname:
-        db_port
-    dest:
-        db_host: laemmi-sync-tools.mysql
-        db_user: db_user
-        db_pw: db_passwd
-        db_dbname: database
+        db_host: ''
+        db_user: ''
+        db_pw: ''
+        db_dbname: ''
         db_port: 3306
-        additional_dump:
+    dest:
+        db_host: 'laemmi-sync-tools.mysql'
+        db_user: 'db_user'
+        db_pw: 'db_passwd'
+        db_dbname: 'database'
+        db_port: 3306
+        additional_dump: ''

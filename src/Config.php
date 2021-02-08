@@ -113,27 +113,31 @@ class Config
 
         $this->debug = $config['debug'];
 
-        $this->path_tmp = realpath($config['path_tmp']);
+        $this->path_tmp = $config['path_tmp'];
 
-        if (!$this->path_tmp) {
+        if (!is_dir($this->path_tmp)) {
             throw new \InvalidArgumentException('path_tmp not exists');
         }
 
-        $this->dest_path = realpath($config['dest']['path']);
+        $this->path_tmp = realpath($this->path_tmp);
 
-        if (!$this->dest_path) {
+        $this->dest_path = $config['dest']['path'];
+
+        if (!is_dir($this->dest_path)) {
             throw new \InvalidArgumentException('dest:path not exists');
         }
+
+        $this->dest_path = realpath($this->dest_path);
 
         $this->src_ssh_host = $config['src']['ssh_host'];
         $this->src_ssh_user = $config['src']['ssh_user'];
         $this->src_ssh_path = $config['src']['ssh_path'];
 
-        $this->attributes_rsync = $config['attributes']['rsync'];
+        $this->attributes_rsync = (array) $config['attributes']['rsync'];
 
         foreach ($config['databases'] as $key => $db) {
             $item = new DatabaseItem();
-            $item->attributes_mysqldump = $db['attributes']['mysqldump'];
+            $item->attributes_mysqldump = (array) $db['attributes']['mysqldump'];
 
             $item->src_db_host = $db['src']['db_host'];
             $item->src_db_port = isset($db['src']['db_port']) ? $db['src']['db_port'] : 3306;
@@ -151,7 +155,8 @@ class Config
             $item->dest_db_user = $db['dest']['db_user'];
             $item->dest_db_pw = $db['dest']['db_pw'];
             $item->dest_db_dbname = $db['dest']['db_dbname'];
-            $item->dest_additional_dump = (string) realpath($db['dest']['additional_dump']);
+            $item->dest_additional_dump = is_file($db['dest']['additional_dump']) ?
+                    realpath($db['dest']['additional_dump']) : '';
 
             $this->databases[] = $item;
         }
