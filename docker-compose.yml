@@ -17,6 +17,7 @@ services:
     container_name: laemmi-sync-tools.mysql
     networks:
       - backend
+    command: --max_allowed_packet=32505856
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: database

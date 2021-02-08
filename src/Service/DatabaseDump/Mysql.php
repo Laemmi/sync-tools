@@ -220,8 +220,9 @@ class Mysql
 
     /**
      * Execute
+     * @return string
      */
-    public function execute()
+    public function execute(): string
     {
         $mysqldump = array_merge(
             ['"mysqldump'],
@@ -245,6 +246,6 @@ class Mysql
             [sprintf('> %s', $this->getPath())]
         )));
 
-        $this->executeCommand($exec);
+        return $this->executeCommand($exec);
     }
 }

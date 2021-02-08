@@ -24,9 +24,9 @@ databases:
         db_dbname:
         db_port
     dest:
-        db_host:
-        db_user:
-        db_pw:
-        db_dbname:
-        db_port:
+        db_host: laemmi-sync-tools.mysql
+        db_user: db_user
+        db_pw: db_passwd
+        db_dbname: database
+        db_port: 3306
         additional_dump:

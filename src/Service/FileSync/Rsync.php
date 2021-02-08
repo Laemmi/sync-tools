@@ -150,8 +150,9 @@ class Rsync
 
     /**
      * Execute
+     * @return string
      */
-    public function execute()
+    public function execute(): string
     {
         $exec = implode(' ', array_filter(array_merge(
             ['rsync'],
@@ -165,6 +166,6 @@ class Rsync
             [$this->getDestPath()]
         )));
 
-        $this->executeCommand($exec);
+        return $this->executeCommand($exec);
     }
 }

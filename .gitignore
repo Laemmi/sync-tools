@@ -1,5 +1,6 @@
 .idea
 /config/lst-config.yml
 /data/
+/tmp/
 /vendor/
 /.phpunit.result.cache

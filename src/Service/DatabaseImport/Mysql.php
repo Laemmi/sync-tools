@@ -186,12 +186,13 @@ class Mysql
 
     /**
      * Execute
+     * @return string
      */
-    public function execute()
+    public function execute(): string
     {
         $file_parts = pathinfo($this->getPath());
 
-        switch($file_parts['extension']) {
+        switch ($file_parts['extension']) {
             case "gz":
                 $command = 'gunzip < %s |';
                 break;
@@ -206,14 +207,14 @@ class Mysql
             ['mysql'],
             $this->getAttributes(),
             [
-                sprintf('--host=\"%s\"', $this->getHost()),
-                sprintf('--user=\"%s\"', $this->getUser()),
-                sprintf('--password=\"%s\"', $this->getPassword()),
+                sprintf('--host="%s"', $this->getHost()),
+                sprintf('--user="%s"', $this->getUser()),
+                sprintf('--password="%s"', $this->getPassword()),
                 sprintf('--port=%s', $this->getPort()),
             ],
             [$this->getDatabase()]
         )));
 
-        $this->executeCommand($exec);
+        return $this->executeCommand($exec);
     }
 }

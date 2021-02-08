@@ -56,15 +56,16 @@ trait ServiceTrait
 
     /**
      * @param string $exec
+     * @return string
      */
-    protected function executeCommand(string $exec): void
+    protected function executeCommand(string $exec): string
     {
         switch ($this->isDebug()) {
             case true:
-                echo $exec;
-                return;
+                return $exec;
             default:
-                passthru($exec);
+                passthru($exec, $return);
+                return (string) $return;
         }
     }
 }

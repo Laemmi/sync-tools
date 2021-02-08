@@ -82,32 +82,32 @@ class DatabaseImport extends Command
 
             $service->setDebug($this->config->debug);
 
-            $service->setHost($db->src_db_host);
-            $service->setUser($db->src_db_user);
-            $service->setPassword($db->src_db_pw);
-            $service->setDatabase($db->src_db_dbname);
-            $service->setPort($db->src_db_port);
+            $service->setHost($db->dest_db_host);
+            $service->setUser($db->dest_db_user);
+            $service->setPassword($db->dest_db_pw);
+            $service->setDatabase($db->dest_db_dbname);
+            $service->setPort($db->dest_db_port);
 
             if (is_file($db->src_db_dump)) {
-                $output->write(sprintf(
-                    'Import Mysql Database %s < %s',
+                $output->write('<info>' . sprintf(
+                    '🤘 Import Mysql Database %s < %s',
                     $db->dest_db_dbname,
                     $db->src_db_dump
-                ), true);
+                ) . '</info>', true);
 
                 $service->setPath($db->src_db_dump);
-                $service->execute();
+                $output->write('<comment>' . $service->execute() . '</comment>', true);
             }
 
             if ($db->dest_additional_dump) {
-                $output->write(sprintf(
-                    'Additional dump Mysql Database %s < %s',
+                $output->write('<info>' . sprintf(
+                    '🤘 Additional dump Mysql Database %s < %s',
                     $db->dest_db_dbname,
                     $db->dest_additional_dump
-                ), true);
+                ) . '</info>', true);
 
                 $service->setPath($db->dest_additional_dump);
-                $service->execute();
+                $output->write('<comment>' . $service->execute() . '</comment>', true);
             }
         }
 

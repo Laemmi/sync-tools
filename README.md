@@ -1,7 +1,7 @@
 # Sync tools 
 
 ## Description
-Synchronisation, Backup von Datenbanken, Dateien.
+Synchronisation & Backup von Mysql-Datenbanken & Dateien. 
 
 ## Installation
 
@@ -30,30 +30,20 @@ Sync files from remote to local destination.
 
 ## Test locally with docker
 
+    docker-compose up -d
+
 ### Database dump
 
-    docker run -it --rm \
-        -v ~/.ssh:/root/.ssh:cached \
-        -v ${PWD}:/var/www/html:cached \
-        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./vendor/bin/lst database:dump
+    docker-compose exec php ./bin/lst database:dump
 
 ### Database import
     
-    docker run -it --rm \
-        -v ~/.ssh:/root/.ssh:cached \
-        -v ${PWD}:/var/www/html:cached \
-        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./vendor/bin/lst database:import
+    docker-compose exec php ./bin/lst database:import
 
 ### Database synchronisation
 
-    docker run -it --rm \
-        -v ~/.ssh:/root/.ssh:cached \
-        -v ${PWD}:/var/www/html:cached \
-        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./vendor/bin/lst database:sync
+    docker-compose exec php ./bin/lst database:sync
 
 ### File synchronisation
 
-    docker run -it --rm \
-        -v ~/.ssh:/root/.ssh:cached \
-        -v ${PWD}:/var/www/html:cached \
-        registry.gitlab.com/laemmi-dockerimages/php-fpm:7.4 php ./vendor/bin/lst file:sync
+    docker-compose exec php ./bin/lst file:sync

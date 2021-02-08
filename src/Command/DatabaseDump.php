@@ -78,11 +78,11 @@ class DatabaseDump extends Command
          * @var Config\DatabaseItem $db
          */
         foreach ($this->config->databases as $db) {
-            $output->write(sprintf(
-                'Dump Mysql Database %s > %s',
+            $output->write('<info>' . sprintf(
+                '🤘 Dump Mysql Database %s > %s',
                 $db->src_db_dbname,
                 $db->src_db_dump,
-            ), true);
+            ) . '</info>', true);
 
             $service = clone $this->service;
 
@@ -100,7 +100,7 @@ class DatabaseDump extends Command
                 $service->addAttribute($attribute);
             }
 
-            $service->execute();
+            $output->write('<comment>' . $service->execute() . '</comment>', true);
         }
 
         return 0;

@@ -75,7 +75,7 @@ class FileSync extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->write(sprintf(
-            'File sync from %s > %s',
+            '<info>🤘 File sync from %s > %s</info>',
             $this->config->src_ssh_path,
             $this->config->dest_path
         ), true);
@@ -91,7 +91,7 @@ class FileSync extends Command
             $this->service->addAttribute($attribute);
         }
 
-        $this->service->execute();
+        $output->write('<comment>' . $this->service->execute() . '</comment>', true);
 
         return 0;
     }

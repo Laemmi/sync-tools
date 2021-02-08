@@ -66,7 +66,7 @@ class DatabaseSync extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write('Sync Mysql Database(s)', true);
+        $output->write('<info>🤘 Sync Mysql Database(s)</info>', true);
 
         $command = $this->getApplication()->find('database:dump');
         $command->run($input, $output);
