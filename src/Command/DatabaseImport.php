@@ -99,14 +99,14 @@ class DatabaseImport extends Command
                 $output->write('<comment>' . $service->execute() . '</comment>', true);
             }
 
-            if (is_file($db->dest_additional_dump)) {
+            foreach ($db->dest_additional_dump as $ad) {
                 $output->write('<info>' . sprintf(
                     '🤘 Additional dump Mysql Database %s < %s',
                     $db->dest_db_dbname,
-                    $db->dest_additional_dump
+                    $ad
                 ) . '</info>', true);
 
-                $service->setPath($db->dest_additional_dump);
+                $service->setPath($ad);
                 $output->write('<comment>' . $service->execute() . '</comment>', true);
             }
         }

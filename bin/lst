@@ -30,13 +30,25 @@
 
 declare(strict_types=1);
 
-require getcwd() . '/vendor/autoload.php';
+$autoload = getcwd() . '/vendor/autoload.php';
+
+if (!is_file($autoload)) {
+    fwrite(
+        STDERR,
+        'Composer autoload not found.' . PHP_EOL .
+        'Change to working directory of your application' . PHP_EOL
+    );
+    exit(1);
+}
+
+require $autoload;
 
 use Laemmi\SyncTools\Command\DatabaseDump;
 use Laemmi\SyncTools\Command\DatabaseImport;
 use Laemmi\SyncTools\Command\DatabaseSync;
 use Laemmi\SyncTools\Command\FileSync;
 use Laemmi\SyncTools\Config;
+use Laemmi\SyncTools\Config\DatabaseItem;
 use Laemmi\SyncTools\Service\DatabaseDump\Mysql as MysqlDump;
 use Laemmi\SyncTools\Service\DatabaseImport\Mysql as MysqlImport;
 use Laemmi\SyncTools\Service\FileSync\Rsync as RsyncFile;
@@ -47,7 +59,9 @@ $application = new Application();
 
 $config = new Config(
     getcwd() . '/config/lst-config.yml',
-        new Parser()
+    __DIR__ . '/../config/lst-config.yml.dist',
+    new DatabaseItem(),
+    new Parser()
 );
 
 $application->add(new DatabaseDump(

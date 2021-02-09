@@ -47,6 +47,16 @@ class Config
     protected string $file;
 
     /**
+     * @var string
+     */
+    protected string $default;
+
+    /**
+     * @var DatabaseItem
+     */
+    protected DatabaseItem $databaseItem;
+
+    /**
      * @var Parser
      */
     protected Parser $parser;
@@ -89,16 +99,23 @@ class Config
     /**
      * Config constructor.
      * @param string $file
+     * @param string $default
+     * @param DatabaseItem $databaseItem
      * @param Parser $parser
      */
-    public function __construct(string $file, Parser $parser)
+    public function __construct(string $file, string $default, DatabaseItem $databaseItem, Parser $parser)
     {
         if (!is_file($file)) {
             throw new \InvalidArgumentException('No config file found');
         }
 
-        $this->file = $file;
+        if (!is_file($default)) {
+            throw new \InvalidArgumentException('No default config file found');
+        }
 
+        $this->file = $file;
+        $this->default = $default;
+        $this->databaseItem = $databaseItem;
         $this->parser = $parser;
 
         $this->parseFile();
@@ -109,7 +126,10 @@ class Config
      */
     protected function parseFile(): array
     {
-        $config = $this->parser->parseFile($this->file);
+        $config = array_replace_recursive(
+            $this->parser->parseFile($this->default),
+            $this->parser->parseFile($this->file)
+        );
 
         $this->debug = $config['debug'];
 
@@ -136,7 +156,7 @@ class Config
         $this->attributes_rsync = (array) $config['attributes']['rsync'];
 
         foreach ($config['databases'] as $key => $db) {
-            $item = new DatabaseItem();
+            $item = clone $this->databaseItem;
             $item->attributes_mysqldump = (array) $db['attributes']['mysqldump'];
 
             $item->src_db_host = $db['src']['db_host'];
@@ -155,8 +175,14 @@ class Config
             $item->dest_db_user = $db['dest']['db_user'];
             $item->dest_db_pw = $db['dest']['db_pw'];
             $item->dest_db_dbname = $db['dest']['db_dbname'];
-            $item->dest_additional_dump = is_file($db['dest']['additional_dump']) ?
-                    realpath($db['dest']['additional_dump']) : '';
+
+            $item->dest_additional_dump = [];
+            foreach ((array) $db['dest']['additional_dump'] as $ad) {
+                if (!is_file($ad)) {
+                    continue;
+                }
+                $item->dest_additional_dump[] = realpath($ad);
+            }
 
             $this->databases[] = $item;
         }
