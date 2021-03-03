@@ -64,6 +64,11 @@ class Rsync
     protected string $src_ssh_host;
 
     /**
+     * @var int
+     */
+    protected int $src_ssh_port = 22;
+
+    /**
      * @var string
      */
     protected string $dest_path;
@@ -117,6 +122,22 @@ class Rsync
     }
 
     /**
+     * @return int
+     */
+    public function getSrcSshPort(): int
+    {
+        return $this->src_ssh_port;
+    }
+
+    /**
+     * @param int $src_ssh_port
+     */
+    public function setSrcSshPort(int $src_ssh_port): void
+    {
+        $this->src_ssh_port = $src_ssh_port;
+    }
+
+    /**
      * @return string
      */
     public function getDestPath(): string
@@ -158,10 +179,11 @@ class Rsync
             ['rsync'],
             $this->getAttributes(),
             [sprintf(
-                '%s@%s:%s',
+                '-e \'ssh -p %4$d\' %1$s@%2$s:%3$s',
                 $this->getSrcSshUser(),
                 $this->getSrcSshHost(),
-                $this->getSrcSshPath()
+                $this->getSrcSshPath(),
+                $this->getSrcSshPort()
             )],
             [$this->getDestPath()]
         )));

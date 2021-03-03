@@ -72,6 +72,11 @@ class Config
     public string $src_ssh_host;
 
     /**
+     * @var int
+     */
+    public int $src_ssh_port;
+
+    /**
      * @var string
      */
     public string $src_ssh_user;
@@ -150,6 +155,7 @@ class Config
         $this->dest_path = realpath($this->dest_path);
 
         $this->src_ssh_host = $config['src']['ssh_host'];
+        $this->src_ssh_port = $config['src']['ssh_port'];
         $this->src_ssh_user = $config['src']['ssh_user'];
         $this->src_ssh_path = $config['src']['ssh_path'];
 

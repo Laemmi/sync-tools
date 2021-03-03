@@ -188,10 +188,11 @@ class Mysql
     /**
      * @param string $ssh_user
      * @param string $ssh_host
+     * @param int $ssh_port
      */
-    public function setSsh(string $ssh_user, string $ssh_host): void
+    public function setSsh(string $ssh_user, string $ssh_host, int $ssh_port): void
     {
-        $this->ssh = sprintf('ssh %s@%s', $ssh_user, $ssh_host);
+        $this->ssh = sprintf('ssh -p %3$d %1$s@%2$s', $ssh_user, $ssh_host, $ssh_port);
     }
 
     /**

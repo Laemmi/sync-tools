@@ -4,6 +4,7 @@ path_tmp: './tmp'
 
 src:
   ssh_host: ''
+  ssh_port: 22
   ssh_user: ''
   ssh_path: ''
 
