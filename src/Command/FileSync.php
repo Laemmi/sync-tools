@@ -86,6 +86,7 @@ class FileSync extends Command
         $this->service->setSrcSshUser($this->config->src_ssh_user);
         $this->service->setSrcSshHost($this->config->src_ssh_host);
         $this->service->setSrcSshPort($this->config->src_ssh_port);
+        $this->service->setSrcSshIdentity($this->config->src_ssh_identity);
         $this->service->setDestPath($this->config->dest_path);
 
         foreach ($this->config->attributes_rsync as $attribute) {

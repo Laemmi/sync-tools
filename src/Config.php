@@ -84,6 +84,11 @@ class Config
     /**
      * @var string
      */
+    public string $src_ssh_identity;
+
+    /**
+     * @var string
+     */
     public string $src_ssh_path;
 
     /**
@@ -154,10 +159,11 @@ class Config
 
         $this->dest_path = realpath($this->dest_path);
 
-        $this->src_ssh_host = $config['src']['ssh_host'];
-        $this->src_ssh_port = $config['src']['ssh_port'];
-        $this->src_ssh_user = $config['src']['ssh_user'];
-        $this->src_ssh_path = $config['src']['ssh_path'];
+        $this->src_ssh_host     = $config['src']['ssh_host'];
+        $this->src_ssh_port     = $config['src']['ssh_port'];
+        $this->src_ssh_user     = $config['src']['ssh_user'];
+        $this->src_ssh_identity = $config['src']['ssh_identity'];
+        $this->src_ssh_path     = $config['src']['ssh_path'];
 
         $this->attributes_rsync = (array) $config['attributes']['rsync'];
 

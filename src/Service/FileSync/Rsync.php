@@ -61,6 +61,11 @@ class Rsync
     /**
      * @var string
      */
+    protected string $src_ssh_identity;
+
+    /**
+     * @var string
+     */
     protected string $src_ssh_host;
 
     /**
@@ -103,6 +108,22 @@ class Rsync
     public function setSrcSshUser(string $src_ssh_user): void
     {
         $this->src_ssh_user = $src_ssh_user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSrcSshIdentity(): string
+    {
+        return $this->src_ssh_identity;
+    }
+
+    /**
+     * @param string $src_ssh_identity
+     */
+    public function setSrcSshIdentity(string $src_ssh_identity): void
+    {
+        $this->src_ssh_identity = $src_ssh_identity;
     }
 
     /**
@@ -179,11 +200,12 @@ class Rsync
             ['rsync'],
             $this->getAttributes(),
             [sprintf(
-                '-e \'ssh -p %4$d\' %1$s@%2$s:%3$s',
+                '-e \'ssh -p %4$d%5$s\' %1$s@%2$s:%3$s',
                 $this->getSrcSshUser(),
                 $this->getSrcSshHost(),
                 $this->getSrcSshPath(),
-                $this->getSrcSshPort()
+                $this->getSrcSshPort(),
+                $this->getSrcSshIdentity() ? sprintf(' -i %s', $this->getSrcSshIdentity()) : ''
             )],
             [$this->getDestPath()]
         )));

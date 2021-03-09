@@ -6,6 +6,7 @@ src:
   ssh_host: ''
   ssh_port: 22
   ssh_user: ''
+  ssh_identity: ''
   ssh_path: ''
 
 dest:
