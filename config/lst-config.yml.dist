@@ -2,6 +2,8 @@ debug: false
 
 path_tmp: './tmp'
 
+path_backup: ''
+
 src:
   ssh_host: ''
   ssh_port: 22

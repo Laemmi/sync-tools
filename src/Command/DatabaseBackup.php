@@ -24,7 +24,7 @@
  * @copyright  ©2021 Spacerabbit
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-License
  * @version    1.0.0
- * @since      27.01.21
+ * @since      10.03.21
  */
 
 declare(strict_types=1);
@@ -37,12 +37,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DatabaseDump extends Command
+class DatabaseBackup extends Command
 {
     /**
      * @var string
      */
-    protected static $defaultName = 'database:dump';
+    protected static $defaultName = 'database:backup';
 
     /**
      * @var Config
@@ -79,28 +79,21 @@ class DatabaseDump extends Command
          */
         foreach ($this->config->databases as $db) {
             $output->write('<info>' . sprintf(
-                '🤘 Dump Mysql Database %s > %s from server %s',
-                $db->src_db_dbname,
-                $db->src_db_dump,
-                $this->config->src_ssh_host,
+                '🤘 Backup local Mysql Database %s > %s',
+                $db->dest_db_dbname,
+                $db->dest_db_dump,
             ) . '</info>', true);
 
             $service = clone $this->service;
 
             $service->setDebug($this->config->debug);
 
-            $service->setHost($db->src_db_host);
-            $service->setUser($db->src_db_user);
-            $service->setPassword($db->src_db_pw);
-            $service->setDatabase($db->src_db_dbname);
-            $service->setPort($db->src_db_port);
-            $service->setPath($db->src_db_dump);
-            $service->setSsh(
-                $this->config->src_ssh_user,
-                $this->config->src_ssh_host,
-                $this->config->src_ssh_port,
-                $this->config->src_ssh_identity
-            );
+            $service->setHost($db->dest_db_host);
+            $service->setUser($db->dest_db_user);
+            $service->setPassword($db->dest_db_pw);
+            $service->setDatabase($db->dest_db_dbname);
+            $service->setPort($db->dest_db_port);
+            $service->setPath($db->dest_db_dump);
 
             foreach ($db->attributes_mysqldump as $attribute) {
                 $service->addAttribute($attribute);

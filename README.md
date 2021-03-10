@@ -9,9 +9,13 @@ Synchronisation & Backup von Mysql-Datenbanken & Dateien.
 
 ## Configuration
 Create `config/lst-config.yml`. You can use template from `vendor/laemmi/sync-tools/lst-config.yml.dist`.
-Add your credetials.
+Add your credentials.
 
 ## Usage
+Backup local database.
+
+    ./vendor/lst database:backup
+    
 Dump database from remote to local destination.
 
     ./vendor/lst database:dump
@@ -31,6 +35,10 @@ Sync files from remote to local destination.
 ## Test locally with docker
 
     docker-compose up -d
+
+### Database backup (local)
+
+    docker-compose exec php ./bin/lst database:backup
 
 ### Database dump
 

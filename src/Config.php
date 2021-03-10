@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace Laemmi\SyncTools;
 
+use DateTime;
 use Laemmi\SyncTools\Config\DatabaseItem;
 use Symfony\Component\Yaml\Parser;
 
@@ -65,6 +66,11 @@ class Config
      * @var string
      */
     public string $path_tmp;
+
+    /**
+     * @var string
+     */
+    public string $path_backup;
 
     /**
      * @var string
@@ -151,6 +157,14 @@ class Config
 
         $this->path_tmp = realpath($this->path_tmp);
 
+        $this->path_backup = $config['path_backup'] ? $config['path_backup'] : $this->path_tmp;
+
+        if (!is_dir($this->path_backup)) {
+            throw new \InvalidArgumentException('path_backup not exists');
+        }
+
+        $this->path_backup = realpath($this->path_backup);
+
         $this->dest_path = $config['dest']['path'];
 
         if (!is_dir($this->dest_path)) {
@@ -187,6 +201,12 @@ class Config
             $item->dest_db_user = $db['dest']['db_user'];
             $item->dest_db_pw = $db['dest']['db_pw'];
             $item->dest_db_dbname = $db['dest']['db_dbname'];
+            $item->dest_db_dump = sprintf(
+                '%s/%s-%s.sql.gz',
+                $this->path_backup,
+                $item->dest_db_dbname,
+                (new DateTime('now'))->format('Y-m-d_H-i-s')
+            );
 
             $item->dest_additional_dump = [];
             foreach ((array) $db['dest']['additional_dump'] as $ad) {

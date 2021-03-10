@@ -79,7 +79,7 @@ class Mysql
     /**
      * @var string
      */
-    protected string $ssh;
+    protected string $ssh = '';
 
     /**
      * @return string
@@ -233,16 +233,22 @@ class Mysql
     public function execute(): string
     {
         $mysqldump = array_merge(
-            ['"mysqldump'],
+            ['mysqldump'],
             $this->attributes,
             [
-                sprintf('--host=\"%s\"', $this->getHost()),
-                sprintf('--user=\"%s\"', $this->getUser()),
-                sprintf('--password=\"%s\"', $this->getPassword()),
+                sprintf('--host="%s"', $this->getHost()),
+                sprintf('--user="%s"', $this->getUser()),
+                sprintf('--password="%s"', $this->getPassword()),
                 sprintf('--port=%s', $this->getPort()),
             ],
-            [$this->getDatabase() . '"']
+            [$this->getDatabase()]
         );
+
+        if ($this->getSsh()) {
+            $mysqldump = array_map('addslashes', $mysqldump);
+            array_unshift($mysqldump, '"');
+            array_push($mysqldump, '"');
+        }
 
         $exec = implode(' ', array_filter(array_merge(
             [$this->getSsh()],

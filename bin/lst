@@ -43,6 +43,7 @@ if (!is_file($autoload)) {
 
 require $autoload;
 
+use Laemmi\SyncTools\Command\DatabaseBackup;
 use Laemmi\SyncTools\Command\DatabaseDump;
 use Laemmi\SyncTools\Command\DatabaseImport;
 use Laemmi\SyncTools\Command\DatabaseSync;
@@ -64,6 +65,10 @@ $config = new Config(
     new Parser()
 );
 
+$application->add(new DatabaseBackup(
+        $config,
+        new MysqlDump())
+);
 $application->add(new DatabaseDump(
         $config,
         new MysqlDump())
