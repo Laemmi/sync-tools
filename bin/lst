@@ -47,11 +47,13 @@ use Laemmi\SyncTools\Command\DatabaseBackup;
 use Laemmi\SyncTools\Command\DatabaseDump;
 use Laemmi\SyncTools\Command\DatabaseImport;
 use Laemmi\SyncTools\Command\DatabaseSync;
+use Laemmi\SyncTools\Command\FileBackup;
 use Laemmi\SyncTools\Command\FileSync;
 use Laemmi\SyncTools\Config;
 use Laemmi\SyncTools\Config\DatabaseItem;
 use Laemmi\SyncTools\Service\DatabaseDump\Mysql as MysqlDump;
 use Laemmi\SyncTools\Service\DatabaseImport\Mysql as MysqlImport;
+use Laemmi\SyncTools\Service\FileBackup\TarGz;
 use Laemmi\SyncTools\Service\FileSync\Rsync as RsyncFile;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Yaml\Parser;
@@ -79,6 +81,10 @@ $application->add(new DatabaseImport(
 ));
 $application->add(new DatabaseSync(
         $config
+));
+$application->add(new FileBackup(
+    $config,
+    new TarGz()
 ));
 $application->add(new FileSync(
         $config,

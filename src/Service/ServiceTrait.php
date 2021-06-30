@@ -65,7 +65,7 @@ trait ServiceTrait
                 return $exec;
             default:
                 passthru($exec, $return);
-                return (string) $return;
+                return (string) sprintf('Result: %s', $return);
         }
     }
 }

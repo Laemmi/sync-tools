@@ -16,6 +16,7 @@ dest:
 
 attributes:
   rsync: []
+  tar: []
 
 databases:
   - attributes:

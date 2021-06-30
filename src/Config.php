@@ -75,6 +75,11 @@ class Config
     /**
      * @var string
      */
+    public string $path_backup_file;
+
+    /**
+     * @var string
+     */
     public string $src_ssh_host;
 
     /**
@@ -106,6 +111,11 @@ class Config
      * @var array
      */
     public array $attributes_rsync;
+
+    /**
+     * @var array
+     */
+    public array $attributes_tar;
 
     /**
      * @var array
@@ -173,6 +183,13 @@ class Config
 
         $this->dest_path = realpath($this->dest_path);
 
+        $this->path_backup_file = sprintf(
+            '%s/%s-%s.tar.gz',
+            $this->path_backup,
+            basename($this->dest_path),
+            $this->getCurrentTime()
+        );
+
         $this->src_ssh_host     = $config['src']['ssh_host'];
         $this->src_ssh_port     = $config['src']['ssh_port'];
         $this->src_ssh_user     = $config['src']['ssh_user'];
@@ -180,6 +197,7 @@ class Config
         $this->src_ssh_path     = $config['src']['ssh_path'];
 
         $this->attributes_rsync = (array) $config['attributes']['rsync'];
+        $this->attributes_tar = (array) $config['attributes']['tar'];
 
         foreach ($config['databases'] as $key => $db) {
             $item = clone $this->databaseItem;
@@ -205,7 +223,7 @@ class Config
                 '%s/%s-%s.sql.gz',
                 $this->path_backup,
                 $item->dest_db_dbname,
-                (new DateTime('now'))->format('Y-m-d_H-i-s')
+                $this->getCurrentTime()
             );
 
             $item->dest_additional_dump = [];
@@ -220,5 +238,13 @@ class Config
         }
 
         return $config;
+    }
+
+    /**
+     * @return string
+     */
+    private function getCurrentTime(): string
+    {
+        return (new DateTime('now'))->format('Y-m-d_H-i-s');
     }
 }
