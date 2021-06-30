@@ -32,6 +32,10 @@ Sync files from remote to local destination.
 
     ./vendor/lst file:sync
 
+Backup local files
+
+    ./vendor/lst file:backup
+
 ## Test locally with docker
 
     docker-compose up -d
@@ -55,3 +59,7 @@ Sync files from remote to local destination.
 ### File synchronisation
 
     docker-compose exec php ./bin/lst file:sync
+
+### File backup (local)
+
+    docker-compose exec php ./bin/lst file:backup
