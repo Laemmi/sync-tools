@@ -103,6 +103,11 @@ class Config
     public string $src_ssh_path;
 
     /**
+     * @var bool
+     */
+    public bool $ssh_force_transfer;
+
+    /**
      * @var string
      */
     public string $dest_path;
@@ -190,11 +195,12 @@ class Config
             $this->getCurrentTime()
         );
 
-        $this->src_ssh_host     = $config['src']['ssh_host'];
-        $this->src_ssh_port     = $config['src']['ssh_port'];
-        $this->src_ssh_user     = $config['src']['ssh_user'];
-        $this->src_ssh_identity = $config['src']['ssh_identity'];
-        $this->src_ssh_path     = $config['src']['ssh_path'];
+        $this->src_ssh_host         = $config['src']['ssh_host'];
+        $this->src_ssh_port         = $config['src']['ssh_port'];
+        $this->src_ssh_user         = $config['src']['ssh_user'];
+        $this->src_ssh_identity     = $config['src']['ssh_identity'];
+        $this->src_ssh_path         = $config['src']['ssh_path'];
+        $this->ssh_force_transfer   = $config['src']['ssh_force_transfer'];
 
         $this->attributes_rsync = (array) $config['attributes']['rsync'];
         $this->attributes_tar = (array) $config['attributes']['tar'];

@@ -94,7 +94,12 @@ class DatabaseDump extends Command
             $service->setPassword($db->src_db_pw);
             $service->setDatabase($db->src_db_dbname);
             $service->setPort($db->src_db_port);
-            $service->setPath($db->src_db_dump);
+
+            if ($this->config->ssh_force_transfer) {
+                $service->setPath($db->src_db_dump);
+            } else {
+                $service->setPath(tempnam(sys_get_temp_dir(), 'sync-tools-'));
+            }
             if ($this->config->src_ssh_host) {
                 $service->setSsh(
                     $this->config->src_ssh_user,
@@ -102,6 +107,7 @@ class DatabaseDump extends Command
                     $this->config->src_ssh_port,
                     $this->config->src_ssh_identity
                 );
+                $service->setSshForceTransfer($this->config->ssh_force_transfer);
             }
 
             foreach ($db->attributes_mysqldump as $attribute) {

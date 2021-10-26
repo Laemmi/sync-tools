@@ -82,6 +82,11 @@ class Mysql
     protected string $ssh = '';
 
     /**
+     * @var bool
+     */
+    protected bool $ssh_force_transfer = true;
+
+    /**
      * @return string
      */
     public function getHost(): string
@@ -186,6 +191,22 @@ class Mysql
     }
 
     /**
+     * @return bool
+     */
+    public function isSshForceTransfer(): bool
+    {
+        return $this->ssh_force_transfer;
+    }
+
+    /**
+     * @param bool $ssh_force_transfer
+     */
+    public function setSshForceTransfer(bool $ssh_force_transfer): void
+    {
+        $this->ssh_force_transfer = $ssh_force_transfer;
+    }
+
+    /**
      * @param string $ssh_user
      * @param string $ssh_host
      * @param int $ssh_port
@@ -247,10 +268,12 @@ class Mysql
         if ($this->getSsh()) {
             $mysqldump = array_map('addslashes', $mysqldump);
             array_unshift($mysqldump, '"');
-            array_push($mysqldump, '"');
+            if ($this->isSshForceTransfer()) {
+                array_push($mysqldump, '"');
+            }
         }
 
-        $exec = implode(' ', array_filter(array_merge(
+        $exec = array_filter(array_merge(
             [$this->getSsh()],
             $mysqldump,
             [
@@ -258,8 +281,11 @@ class Mysql
                 '| gzip -9'
             ],
             [sprintf('> %s', $this->getPath())]
-        )));
+        ));
+        if (!$this->isSshForceTransfer()) {
+            array_push($exec, '"');
+        }
 
-        return $this->executeCommand($exec);
+        return $this->executeCommand(implode(' ', $exec));
     }
 }
