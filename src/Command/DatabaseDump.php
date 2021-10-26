@@ -78,6 +78,7 @@ class DatabaseDump extends Command
          * @var Config\DatabaseItem $db
          */
         foreach ($this->config->databases as $db) {
+            $tmpfile = tempnam(sys_get_temp_dir(), 'sync-tools-');
             $output->write('<info>' . sprintf(
                 '🤘 Dump Mysql Database %s > %s from server %s',
                 $db->src_db_dbname,
@@ -94,19 +95,38 @@ class DatabaseDump extends Command
             $service->setPassword($db->src_db_pw);
             $service->setDatabase($db->src_db_dbname);
             $service->setPort($db->src_db_port);
-            $service->setPath($db->src_db_dump);
-            $service->setSsh(
-                $this->config->src_ssh_user,
-                $this->config->src_ssh_host,
-                $this->config->src_ssh_port,
-                $this->config->src_ssh_identity
-            );
+
+            if ($this->config->ssh_force_transfer) {
+                $service->setPath($db->src_db_dump);
+            } else {
+                $service->setPath($tmpfile);
+            }
+            if ($this->config->src_ssh_host) {
+                $service->setSsh(
+                    $this->config->src_ssh_user,
+                    $this->config->src_ssh_host,
+                    $this->config->src_ssh_port,
+                    $this->config->src_ssh_identity
+                );
+                $service->setSshForceTransfer($this->config->ssh_force_transfer);
+            }
 
             foreach ($db->attributes_mysqldump as $attribute) {
                 $service->addAttribute($attribute);
             }
 
             $output->write('<comment>' . $service->execute() . '</comment>', true);
+
+            if (!$this->config->ssh_force_transfer) {
+                $output->write('<info>' . sprintf(
+                    '🤘 Transfer Dump %s:%s > %s',
+                    $this->config->src_ssh_host,
+                    $tmpfile,
+                    $db->src_db_dump,
+                ) . '</info>', true);
+
+                $output->write('<comment>not implement yet</comment>', true);
+            }
         }
 
         return 0;
