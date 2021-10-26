@@ -95,12 +95,14 @@ class DatabaseDump extends Command
             $service->setDatabase($db->src_db_dbname);
             $service->setPort($db->src_db_port);
             $service->setPath($db->src_db_dump);
-            $service->setSsh(
-                $this->config->src_ssh_user,
-                $this->config->src_ssh_host,
-                $this->config->src_ssh_port,
-                $this->config->src_ssh_identity
-            );
+            if ($this->config->src_ssh_host) {
+                $service->setSsh(
+                    $this->config->src_ssh_user,
+                    $this->config->src_ssh_host,
+                    $this->config->src_ssh_port,
+                    $this->config->src_ssh_identity
+                );
+            }
 
             foreach ($db->attributes_mysqldump as $attribute) {
                 $service->addAttribute($attribute);
