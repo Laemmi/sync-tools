@@ -78,6 +78,7 @@ class DatabaseDump extends Command
          * @var Config\DatabaseItem $db
          */
         foreach ($this->config->databases as $db) {
+            $tmpfile = tempnam(sys_get_temp_dir(), 'sync-tools-');
             $output->write('<info>' . sprintf(
                 '🤘 Dump Mysql Database %s > %s from server %s',
                 $db->src_db_dbname,
@@ -98,7 +99,7 @@ class DatabaseDump extends Command
             if ($this->config->ssh_force_transfer) {
                 $service->setPath($db->src_db_dump);
             } else {
-                $service->setPath(tempnam(sys_get_temp_dir(), 'sync-tools-'));
+                $service->setPath($tmpfile);
             }
             if ($this->config->src_ssh_host) {
                 $service->setSsh(
@@ -115,6 +116,17 @@ class DatabaseDump extends Command
             }
 
             $output->write('<comment>' . $service->execute() . '</comment>', true);
+
+            if (!$this->config->ssh_force_transfer) {
+                $output->write('<info>' . sprintf(
+                    '🤘 Transfer Dump %s:%s > %s',
+                    $this->config->src_ssh_host,
+                    $tmpfile,
+                    $db->src_db_dump,
+                ) . '</info>', true);
+
+                $output->write('<comment>not implement yet</comment>', true);
+            }
         }
 
         return 0;
