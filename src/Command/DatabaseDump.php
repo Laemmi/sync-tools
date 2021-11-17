@@ -33,6 +33,7 @@ namespace Laemmi\SyncTools\Command;
 
 use Laemmi\SyncTools\Config;
 use Laemmi\SyncTools\Service\DatabaseDump\Mysql;
+use Laemmi\SyncTools\Service\FileSync\Rsync;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -55,16 +56,26 @@ class DatabaseDump extends Command
     protected Mysql $service;
 
     /**
+     * @var Rsync
+     */
+    protected Rsync $rsync_service;
+
+    /**
      * DatabaseDump constructor.
      * @param Config $config
      * @param Mysql $service
+     * @param Rsync $rsync_service
      */
-    public function __construct(Config $config, Mysql $service)
-    {
+    public function __construct(
+        Config $config,
+        Mysql $service,
+        Rsync $rsync_service
+    ) {
         parent::__construct();
 
         $this->config = $config;
         $this->service = $service;
+        $this->rsync_service = $rsync_service;
     }
 
     /**
@@ -86,7 +97,7 @@ class DatabaseDump extends Command
                 $this->config->src_ssh_host,
             ) . '</info>', true);
 
-            $service = clone $this->service;
+            $service = $this->service;
 
             $service->setDebug($this->config->debug);
 
@@ -125,7 +136,20 @@ class DatabaseDump extends Command
                     $db->src_db_dump,
                 ) . '</info>', true);
 
-                $output->write('<comment>not implement yet</comment>', true);
+                $this->rsync_service->setDebug($this->config->debug);
+                $this->rsync_service->setSrcSshPath($tmpfile);
+                $this->rsync_service->setSrcSshUser($this->config->src_ssh_user);
+                $this->rsync_service->setSrcSshHost($this->config->src_ssh_host);
+                $this->rsync_service->setSrcSshPort($this->config->src_ssh_port);
+                $this->rsync_service->setSrcSshIdentity($this->config->src_ssh_identity);
+                $this->rsync_service->setDestPath($db->src_db_dump);
+
+                $this->rsync_service->addAttribute('--remove-source-files');
+                foreach ($this->config->attributes_rsync as $attribute) {
+                    $this->rsync_service->addAttribute($attribute);
+                }
+
+                $output->write('<comment>' . $this->rsync_service->execute() . '</comment>', true);
             }
         }
 
