@@ -11,6 +11,9 @@ Synchronisation & Backup von Mysql-Datenbanken & Dateien.
 Create `config/lst-config.yml`. You can use template from `vendor/laemmi/sync-tools/lst-config.yml.dist`.
 Add your credentials.
 
+### ssh_force_transfer (bool) Default: true
+If set to false mysql dump would be transfer with rsync. It is better on slow internet connections.
+
 ## Usage
 Backup local database.
 

@@ -69,12 +69,13 @@ $config = new Config(
 
 $application->add(new DatabaseBackup(
         $config,
-        new MysqlDump())
-);
+        new MysqlDump()
+));
 $application->add(new DatabaseDump(
         $config,
-        new MysqlDump())
-);
+        new MysqlDump(),
+        new RsyncFile()
+));
 $application->add(new DatabaseImport(
         $config,
         new MysqlImport()
@@ -83,8 +84,8 @@ $application->add(new DatabaseSync(
         $config
 ));
 $application->add(new FileBackup(
-    $config,
-    new TarGz()
+        $config,
+        new TarGz()
 ));
 $application->add(new FileSync(
         $config,
