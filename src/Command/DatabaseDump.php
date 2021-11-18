@@ -143,11 +143,7 @@ class DatabaseDump extends Command
                 $this->rsync_service->setSrcSshPort($this->config->src_ssh_port);
                 $this->rsync_service->setSrcSshIdentity($this->config->src_ssh_identity);
                 $this->rsync_service->setDestPath($db->src_db_dump);
-
                 $this->rsync_service->addAttribute('--remove-source-files');
-                foreach ($this->config->attributes_rsync as $attribute) {
-                    $this->rsync_service->addAttribute($attribute);
-                }
 
                 $output->write('<comment>' . $this->rsync_service->execute() . '</comment>', true);
             }
