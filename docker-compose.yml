@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   php:
-    image: laemmi/php-fpm:7.4
+    image: laemmi/php-fpm:8.0
     container_name: laemmi-sync-tools.php
     networks:
       - backend
