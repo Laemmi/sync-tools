@@ -23,9 +23,9 @@ Dump database from remote to local destination.
 
     ./vendor/lst database:dump
 
-Import Databasedump to local database.
+Import Databasedump to local database. import_dump is optional name of database for import.
 
-    ./vendor/lst database:import
+    ./vendor/lst database:import import_dump
 
 Sync remote database to local database.
 

@@ -34,6 +34,7 @@ namespace Laemmi\SyncTools\Command;
 use Laemmi\SyncTools\Config;
 use Laemmi\SyncTools\Service\DatabaseImport\Mysql;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -67,6 +68,15 @@ class DatabaseImport extends Command
         $this->service = $service;
     }
 
+    protected function configure()
+    {
+        $this->addArgument(
+            'import_dump',
+            InputArgument::OPTIONAL,
+            'Import dump database from temp dir.'
+        );
+    }
+
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -74,6 +84,8 @@ class DatabaseImport extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $import_dump = $input->getArgument('import_dump');
+
         /**
          * @var Config\DatabaseItem $db
          */
@@ -87,6 +99,16 @@ class DatabaseImport extends Command
             $service->setPassword($db->dest_db_pw);
             $service->setDatabase($db->dest_db_dbname);
             $service->setPort($db->dest_db_port);
+
+            $import_dump = sprintf(
+                '%s/%s.sql.gz',
+                $this->config->path_tmp,
+                $import_dump
+            );
+
+            if (is_file($import_dump)) {
+                $db->src_db_dump = $import_dump;
+            }
 
             if (is_file($db->src_db_dump)) {
                 $output->write('<info>' . sprintf(
