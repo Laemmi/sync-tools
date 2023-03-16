@@ -5,6 +5,7 @@ path_tmp: './tmp'
 path_backup: ''
 
 src:
+  path: ''
   ssh_host: ''
   ssh_port: 22
   ssh_user: ''

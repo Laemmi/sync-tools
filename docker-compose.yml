@@ -2,21 +2,15 @@ version: '3.5'
 
 services:
   php:
-    image: laemmi/php-fpm:8.0
-    container_name: laemmi-sync-tools.php
-    networks:
-      - backend
+    image: laemmi/php-fpm:8.1
     depends_on:
       - mysql
     volumes:
       - ~/.ssh:/root/.ssh:ro
-      - ${PWD}:/var/www/html:cached
+      - www_volume:/var/www/html:cached
 
   mysql:
-    image: mysql:5.7.32
-    container_name: laemmi-sync-tools.mysql
-    networks:
-      - backend
+    image: mysql:5.7
     command: --max_allowed_packet=32505856
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -24,7 +18,12 @@ services:
       MYSQL_USER: db_user
       MYSQL_PASSWORD: db_passwd
     ports:
-      - 3306:3306
+      - "3306:3306"
 
-networks:
-  backend:
+volumes:
+  www_volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: .

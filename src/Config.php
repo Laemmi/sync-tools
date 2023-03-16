@@ -80,6 +80,11 @@ class Config
     /**
      * @var string
      */
+    public string $src_path;
+
+    /**
+     * @var string
+     */
     public string $src_ssh_host;
 
     /**
@@ -194,6 +199,15 @@ class Config
             basename($this->dest_path),
             $this->getCurrentTime()
         );
+
+        $this->src_path = $config['src']['path'];
+
+        if ($this->src_path) {
+            if (!is_dir($this->src_path)) {
+                throw new \InvalidArgumentException('src:path not exists');
+            }
+            $this->src_path = realpath($this->src_path);
+        }
 
         $this->src_ssh_host         = $config['src']['ssh_host'];
         $this->src_ssh_port         = $config['src']['ssh_port'];

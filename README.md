@@ -31,7 +31,7 @@ Sync remote database to local database.
 
     ./vendor/lst database:sync
 
-Sync files from remote to local destination.
+Sync files from remote or local to local destination.
 
     ./vendor/lst file:sync
 

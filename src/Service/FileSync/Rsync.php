@@ -51,6 +51,11 @@ class Rsync
     /**
      * @var string
      */
+    protected string $src_path;
+
+    /**
+     * @var string
+     */
     protected string $src_ssh_path;
 
     /**
@@ -77,6 +82,22 @@ class Rsync
      * @var string
      */
     protected string $dest_path;
+
+    /**
+     * @return string
+     */
+    public function getSrcPath(): string
+    {
+        return $this->src_path;
+    }
+
+    /**
+     * @param string $src_path
+     */
+    public function setSrcPath(string $src_path): void
+    {
+        $this->src_path = $src_path;
+    }
 
     /**
      * @return string
@@ -196,17 +217,23 @@ class Rsync
      */
     public function execute(): string
     {
-        $exec = implode(' ', array_filter(array_merge(
-            ['rsync'],
-            $this->getAttributes(),
-            [sprintf(
+        if ($this->getSrcPath()) {
+            $src = $this->getSrcPath();
+        } else {
+            $src = sprintf(
                 '-e \'ssh -p %4$d%5$s\' %1$s@%2$s:%3$s',
                 $this->getSrcSshUser(),
                 $this->getSrcSshHost(),
                 $this->getSrcSshPath(),
                 $this->getSrcSshPort(),
                 $this->getSrcSshIdentity() ? sprintf(' -i %s', $this->getSrcSshIdentity()) : ''
-            )],
+            );
+        }
+
+        $exec = implode(' ', array_filter(array_merge(
+            ['rsync'],
+            $this->getAttributes(),
+            [$src],
             [$this->getDestPath()]
         )));
 

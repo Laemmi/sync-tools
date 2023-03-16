@@ -82,6 +82,7 @@ class FileSync extends Command
 
         $this->service->setDebug($this->config->debug);
 
+        $this->service->setSrcPath($this->config->src_path);
         $this->service->setSrcSshPath($this->config->src_ssh_path);
         $this->service->setSrcSshUser($this->config->src_ssh_user);
         $this->service->setSrcSshHost($this->config->src_ssh_host);
