@@ -76,7 +76,7 @@ class FileSync extends Command
     {
         $output->write(sprintf(
             '<info>🤘 File sync from %s > %s</info>',
-            $this->config->src_ssh_path,
+            $this->config->src_path ?? $this->config->src_ssh_path,
             $this->config->dest_path
         ), true);
 

@@ -191,7 +191,7 @@ class Config
             throw new \InvalidArgumentException('dest:path not exists');
         }
 
-        $this->dest_path = realpath($this->dest_path);
+        $this->dest_path = $this->realpath($this->dest_path);
 
         $this->path_backup_file = sprintf(
             '%s/%s-%s.tar.gz',
@@ -206,7 +206,7 @@ class Config
             if (!is_dir($this->src_path)) {
                 throw new \InvalidArgumentException('src:path not exists');
             }
-            $this->src_path = realpath($this->src_path);
+            $this->src_path = $this->realpath($this->src_path);
         }
 
         $this->src_ssh_host         = $config['src']['ssh_host'];
@@ -266,5 +266,20 @@ class Config
     private function getCurrentTime(): string
     {
         return (new DateTime('now'))->format('Y-m-d_H-i-s');
+    }
+
+    /**
+     * Build realpath with trailing slash
+     * @param string $path
+     * @return string
+     */
+    private function realpath(string $path): string
+    {
+        $last_char = substr($path, -1);
+        $path = realpath($path);
+        if (DIRECTORY_SEPARATOR === $last_char) {
+            $path .= DIRECTORY_SEPARATOR;
+        }
+        return $path;
     }
 }
